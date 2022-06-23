@@ -1,0 +1,129 @@
+const model = require("../models/recipeModels");
+const getRecipe = async (req, res) => {
+  try {
+    const getData = await model.getAllRecipe();
+    res.send({ data: getData.rows, jumlahData: getData.rowCount });
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("something went wrong");
+  }
+};
+
+const searchNameRecipe = async (req, res) => {
+  try {
+    const { name } = req.body;
+    const getData = await model.getNameRecipe(name);
+    res.send({
+      data: getData.rows,
+      jumlahData: getData.rowCount,
+    });
+  } catch (error) {
+    res.status(400).send("something went wrong");
+  }
+};
+
+const getLatestRecipe = async (req, res) => {
+  try {
+    const data = await model.getLatestRecipe();
+    const max = 5;
+    if (data) {
+      res.send({ result: data.rows });
+    } else {
+      res.send({ data: (data.rows = max) });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("something went wrong");
+  }
+};
+
+const addRecipe = async (req, res) => {
+  try {
+    const { name, ingredients, video, user_id } = req.body;
+    const image = req.file.path || "images/default.jpg";
+    const addRecipe = await model.addRecipe({
+      name,
+      ingredients,
+      image,
+      video,
+      user_id,
+    });
+    if (addRecipe) {
+      res.send("data added successfully");
+    } else {
+      console.log(res);
+      res.status(400).send("data failed to add");
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("something went wrong");
+  }
+};
+
+const editRecipe = async (req, res) => {
+  try {
+    const { name, ingredients, image, video, id } = req.body;
+
+    const getData = await model.getRecipeById(id);
+    if (getData.rowCount > 0) {
+      let inputName = name || getData.rows[0].name;
+      let inputIngredients = ingredients || getData.rows[0].ingredients;
+      let inputImage = image || getData.rows[0].image;
+      let inputVideo = video || getData.rows[0].video;
+
+      let message = "";
+
+      if (name) message += "name,";
+      if (ingredients) message += "ingredients,";
+      if (image) message += "image,";
+      if (video) message += "video,";
+      if (image) message += "image,";
+
+      const editData = await model.editUser({
+        name: inputName,
+        ingredients: inputIngredients,
+        image: inputImage,
+        video: inputVideo,
+
+        id,
+      });
+      if (editData) {
+        res.send(`${message} successfully changed`);
+      } else {
+        res.status(400).send("data failed to change");
+      }
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("something went wrong");
+  }
+};
+
+const deleteRecipe = async (req, res) => {
+  try {
+    const { id } = req.body;
+    const getData = await model.getRecipeById(id);
+    if (getData.rowCount > 0) {
+      const deleteUser = await model.deleteRecipe(id);
+      if (deleteUser) {
+        res.send(`data id ${id} successfully deleted`);
+      } else {
+        res.status(400).send("data failed to delete");
+      }
+    } else {
+      res.status(400).send("data not found");
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("something went wrong");
+  }
+};
+
+module.exports = {
+  getRecipe,
+  searchNameRecipe,
+  getLatestRecipe,
+  addRecipe,
+  editRecipe,
+  deleteRecipe,
+};
