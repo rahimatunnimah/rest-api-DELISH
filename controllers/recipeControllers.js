@@ -1,10 +1,10 @@
 const model = require("../models/recipeModels");
 const getRecipe = async (req, res) => {
   try {
-    const getData = await model.getAllRecipe();
+    const { page, limit } = req.query;
+    const getData = await model.getAllRecipe(page, limit);
     res.send({ data: getData.rows, jumlahData: getData.rowCount });
   } catch (error) {
-    console.log(error);
     res.status(400).send("something went wrong");
   }
 };
@@ -30,6 +30,36 @@ const getLatestRecipe = async (req, res) => {
       res.send({ result: data.rows });
     } else {
       res.send({ data: (data.rows = max) });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("something went wrong");
+  }
+};
+
+const getRecipeWithComment = async (req, res) => {
+  try {
+    const getData = await model.getRecipeWithComment();
+    if (getData.rowCount > 0) {
+      res.send({ result: getData.rows });
+    } else {
+      res.status(404).send("Data not found");
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("something went wrong");
+  }
+};
+
+const getRecipeByUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (Number(id)) {
+      const getData = await model.getRecipeByUser(id);
+      res.send({ data: getData.rows, jumlahData: getData.rowCount });
+    } else {
+      console.log(res);
+      res.status(400).send("Parameter must be a number!");
     }
   } catch (error) {
     console.log(error);
@@ -79,7 +109,7 @@ const editRecipe = async (req, res) => {
       if (video) message += "video,";
       if (image) message += "image,";
 
-      const editData = await model.editUser({
+      const editData = await model.editRecipe({
         name: inputName,
         ingredients: inputIngredients,
         image: inputImage,
@@ -123,6 +153,8 @@ module.exports = {
   getRecipe,
   searchNameRecipe,
   getLatestRecipe,
+  getRecipeWithComment,
+  getRecipeByUser,
   addRecipe,
   editRecipe,
   deleteRecipe,

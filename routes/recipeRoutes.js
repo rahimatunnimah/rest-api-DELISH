@@ -15,6 +15,8 @@ const upload = multer({ storage: storage });
 Router.get("/", controller.getRecipe)
   .get("/search/name", controller.searchNameRecipe)
   .get("/latest", controller.getLatestRecipe)
+  .get("/comment", controller.getRecipeWithComment)
+  .get("/user/:id", controller.getRecipeByUser)
   .post("/add", upload.single("image"), controller.addRecipe)
   .patch("/edit", controller.editRecipe)
   .delete("/delete", controller.deleteRecipe);
