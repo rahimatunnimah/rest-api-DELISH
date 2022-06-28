@@ -1,4 +1,5 @@
 const model = require("../models/userModels");
+const bcrypt = require("bcrypt");
 
 const getUsers = async (req, res) => {
   try {
@@ -10,13 +11,31 @@ const getUsers = async (req, res) => {
   }
 };
 
+const searchEmailUsers = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const getData = await model.getByEmail(email);
+
+    res.send({
+      data: getData.rows,
+      jumlahData: getData.rowCount,
+    });
+  } catch (error) {
+    res.status(400).send("ada yang error");
+  }
+};
+
 const addUser = async (req, res) => {
   try {
     const { username, email, password, phone, image } = req.body;
+    console.log(req.body.password);
+    const salt = bcrypt.genSaltSync(15); // generate random string
+    const hash = bcrypt.hashSync(password, salt); // hash password
+    console.log(salt);
     const addUser = await model.addUser({
       username,
       email,
-      password,
+      password: hash,
       phone,
       image,
     });
@@ -91,4 +110,4 @@ const deleteUser = async (req, res) => {
   }
 };
 
-module.exports = { getUsers, addUser, editUser, deleteUser };
+module.exports = { getUsers, addUser, editUser, deleteUser, searchEmailUsers };

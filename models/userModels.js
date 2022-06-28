@@ -23,7 +23,21 @@ const getUserById = (id) => {
     });
   });
 };
-
+const getByEmail = (email) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      `SELECT * FROM users WHERE email = $1`,
+      [email],
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+};
 const addUser = (props) => {
   return new Promise((resolve, reject) => {
     db.query(
@@ -78,6 +92,7 @@ const deleteUser = (id) => {
 module.exports = {
   getAllUser,
   getUserById,
+  getByEmail,
   addUser,
   editUser,
   deleteUser,
