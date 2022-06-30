@@ -70,22 +70,21 @@ const getRecipeByUser = async (req, res) => {
 const addRecipe = async (req, res) => {
   try {
     const { name, ingredients, video, user_id } = req.body;
-    const image = req.file.path || "images/default.jpg";
+
     const addRecipe = await model.addRecipe({
       name,
       ingredients,
-      image,
       video,
       user_id,
+      recipe_image: req.file.path,
     });
+
     if (addRecipe) {
       res.send("data added successfully");
     } else {
-      console.log(res);
       res.status(400).send("data failed to add");
     }
   } catch (error) {
-    console.log(error);
     res.status(400).send("something went wrong");
   }
 };

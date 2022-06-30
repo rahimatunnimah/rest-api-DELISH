@@ -91,8 +91,14 @@ const getRecipeByUser = (user_id) => {
 const addRecipe = (props) => {
   return new Promise((resolve, reject) => {
     db.query(
-      `INSERT INTO recipes (name, ingredients, image, video, user_id) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-      [props.name, props.ingredients, props.image, props.video, props.user_id],
+      `INSERT INTO recipes (name, ingredients, recipe_image, video, user_id) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+      [
+        props.name,
+        props.ingredients,
+        props.recipe_image,
+        props.video,
+        props.user_id,
+      ],
       (error, result) => {
         if (error) {
           reject(error);

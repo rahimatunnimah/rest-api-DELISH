@@ -8,17 +8,17 @@ const helmet = require("helmet");
 // eslint-disable-next-line no-undef
 const port = process.env.PORT || 8001;
 const cors = require("cors");
-const multer = require("multer");
+// const multer = require("multer");
 
 const router = require("./routes/index");
 
 app.use(helmet());
 
-const forms = multer();
+// const forms = multer();
+// app.use(forms.array());
 
 app.use(bodyParser.json());
-app.use(forms.array());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(cors());
 const allowlist = ["https://localhost:3001"];

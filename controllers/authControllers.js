@@ -5,16 +5,12 @@ const bcrypt = require("bcrypt");
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    // search user
     const getUserByEmail = await model.getByEmail(email);
-
     if (getUserByEmail.rowCount) {
-      // validate password
       const checkPasswrod = bcrypt.compareSync(
         password,
         getUserByEmail.rows[0].password
-      ); // true or false
+      );
 
       if (checkPasswrod) {
         const token = jwt.sign(
@@ -26,14 +22,14 @@ const login = async (req, res) => {
 
         res.status(200).send(token);
       } else {
-        res.status(401).send("password tidak sesuai");
+        res.status(401).send("invalid password");
       }
     } else {
-      res.status(400).send("user tidak terdaftar");
+      res.status(400).send("user not register");
     }
   } catch (error) {
     console.log(error);
-    res.status(400).send("ada yang error");
+    res.status(400).send("something went wrong");
   }
 };
 

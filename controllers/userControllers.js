@@ -20,6 +20,7 @@ const searchEmailUsers = async (req, res) => {
       data: getData.rows,
       jumlahData: getData.rowCount,
     });
+    console.log(getData.rows);
   } catch (error) {
     res.status(400).send("ada yang error");
   }
@@ -27,26 +28,24 @@ const searchEmailUsers = async (req, res) => {
 
 const addUser = async (req, res) => {
   try {
-    const { username, email, password, phone, image } = req.body;
-    console.log(req.body.password);
-    const salt = bcrypt.genSaltSync(15); // generate random string
-    const hash = bcrypt.hashSync(password, salt); // hash password
-    console.log(salt);
+    const { username, email, password, phone } = req.body;
+    const salt = bcrypt.genSaltSync(15);
+    const hash = bcrypt.hashSync(password, salt);
+
     const addUser = await model.addUser({
       username,
       email,
       password: hash,
       phone,
-      image,
+      image: req.file.path,
     });
+
     if (addUser) {
       res.send("data added successfully");
     } else {
-      console.log(res);
       res.status(400).send("data failed to add");
     }
   } catch (error) {
-    console.log(error);
     res.status(400).send("something went wrong");
   }
 };
