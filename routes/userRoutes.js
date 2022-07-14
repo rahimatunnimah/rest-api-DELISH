@@ -1,11 +1,11 @@
 const Router = require("express").Router();
-// const middlewares = require("../middlewares/verifyToken");
+const middlewares = require("../middlewares/verifyToken");
 const controller = require("../controllers/userControllers");
 const userUpload = require("../middlewares/uploadProfile");
 
-Router.get("/", controller.getUsers)
+Router.get("/", middlewares.checkToken, controller.getUsers)
   .get("/search/email", controller.searchEmailUsers)
-  .patch("/edit", userUpload, controller.editUser)
-  .delete("/delete", controller.deleteUser);
+  .patch("/edit", middlewares.checkToken, userUpload, controller.editUser)
+  .delete("/delete", middlewares.checkToken, controller.deleteUser);
 
 module.exports = Router;

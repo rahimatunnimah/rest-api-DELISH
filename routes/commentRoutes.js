@@ -1,9 +1,10 @@
 const Router = require("express").Router();
+const middlewares = require("../middlewares/verifyToken");
 const controller = require("../controllers/commentControllers");
 
 Router.get("/", controller.showAllComment)
   .get("/recipe", controller.getCommentByRecipe)
-  .post("/add", controller.addComment)
-  .patch("/edit", controller.editComment)
-  .delete("/delete", controller.deleteComment);
+  .post("/add", middlewares.checkToken, controller.addComment)
+  .patch("/edit", middlewares.checkToken, controller.editComment)
+  .delete("/delete", middlewares.checkToken, controller.deleteComment);
 module.exports = Router;
