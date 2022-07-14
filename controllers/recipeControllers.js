@@ -9,6 +9,23 @@ const getRecipe = async (req, res) => {
   }
 };
 
+const getRecipeDetail = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const getData = await model.getRecipeDetail(id);
+
+    if (getData.rows.length === 0) {
+      res.status(400).send("Data not found");
+    } else {
+      res.send({
+        data: getData.rows,
+      });
+    }
+  } catch (error) {
+    res.status(400).send("Something went wrong detail");
+  }
+};
+
 const searchNameRecipe = async (req, res) => {
   try {
     const { name } = req.body;
@@ -25,7 +42,7 @@ const searchNameRecipe = async (req, res) => {
 const getLatestRecipe = async (req, res) => {
   try {
     const data = await model.getLatestRecipe();
-    const max = 5;
+    const max = 6;
     if (data) {
       res.send({ result: data.rows });
     } else {
@@ -33,7 +50,7 @@ const getLatestRecipe = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(400).send("something went wrong");
+    res.status(400).send("something went wrong bhjkjh");
   }
 };
 
@@ -70,7 +87,6 @@ const getRecipeByUser = async (req, res) => {
 const addRecipe = async (req, res) => {
   try {
     const { name, ingredients, video, user_id } = req.body;
-
     const addRecipe = await model.addRecipe({
       name,
       ingredients,
@@ -80,7 +96,18 @@ const addRecipe = async (req, res) => {
     });
 
     if (addRecipe) {
-      res.send("data added successfully");
+      const bahan = addRecipe.rows[0].ingredients.split(",");
+
+      res.send({
+        message: "data added successfully",
+        data: {
+          name: name.trim(),
+          ingredients: bahan,
+          video,
+          user_id,
+          recipe_image: req.file.path,
+        },
+      });
     } else {
       res.status(400).send("data failed to add");
     }
@@ -150,6 +177,7 @@ const deleteRecipe = async (req, res) => {
 
 module.exports = {
   getRecipe,
+  getRecipeDetail,
   searchNameRecipe,
   getLatestRecipe,
   getRecipeWithComment,

@@ -13,11 +13,28 @@ const showAllComment = async (req, res) => {
     res.status(400).send("something went wrong");
   }
 };
+const getCommentByRecipe = async (req, res) => {
+  try {
+    const id = parseInt(req.body.id);
+    const getData = await model.getCommentByRecipe(id);
+
+    res.send({
+      data: getData.rows,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("Something wrong, get recipe comment fail!");
+  }
+};
 
 const addComment = async (req, res) => {
   try {
-    const { comment, recipe_id } = req.body;
-    const insertComment = await model.addComment({ comment, recipe_id });
+    const { comment, recipe_id, user_id } = req.body;
+    const insertComment = await model.addComment({
+      comment,
+      recipe_id,
+      user_id,
+    });
     if (insertComment) {
       res.send("data added successfully");
     } else {
@@ -68,4 +85,10 @@ const deleteComment = async (req, res) => {
     res.status(400).send("something went wrong");
   }
 };
-module.exports = { showAllComment, addComment, editComment, deleteComment };
+module.exports = {
+  showAllComment,
+  getCommentByRecipe,
+  addComment,
+  editComment,
+  deleteComment,
+};

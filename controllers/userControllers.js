@@ -1,5 +1,4 @@
 const model = require("../models/userModels");
-const bcrypt = require("bcrypt");
 
 const getUsers = async (req, res) => {
   try {
@@ -26,34 +25,10 @@ const searchEmailUsers = async (req, res) => {
   }
 };
 
-const addUser = async (req, res) => {
-  try {
-    const { username, email, password, phone } = req.body;
-    const salt = bcrypt.genSaltSync(15);
-    const hash = bcrypt.hashSync(password, salt);
-
-    const addUser = await model.addUser({
-      username,
-      email,
-      password: hash,
-      phone,
-      image: req.file.path,
-    });
-
-    if (addUser) {
-      res.send("data added successfully");
-    } else {
-      res.status(400).send("data failed to add");
-    }
-  } catch (error) {
-    res.status(400).send("something went wrong");
-  }
-};
-
 const editUser = async (req, res) => {
   try {
-    const { username, email, password, phone, image, id } = req.body;
-
+    const { username, email, password, phone, id } = req.body;
+    const image = req.file.path;
     const getData = await model.getUserById(id);
     if (getData.rowCount > 0) {
       let inputUsername = username || getData.rows[0].username;
@@ -109,4 +84,10 @@ const deleteUser = async (req, res) => {
   }
 };
 
-module.exports = { getUsers, addUser, editUser, deleteUser, searchEmailUsers };
+module.exports = {
+  getUsers,
+
+  editUser,
+  deleteUser,
+  searchEmailUsers,
+};

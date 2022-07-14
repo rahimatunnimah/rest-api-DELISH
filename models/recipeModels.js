@@ -19,7 +19,7 @@ const getAllRecipe = (page, limit) => {
 const getNameRecipe = (name) => {
   return new Promise((resolve, reject) => {
     db.query(
-      `SELECT * FROM recipes WHERE name = $1`,
+      `SELECT * FROM recipes WHERE name ~* $1`,
       [name],
       (error, result) => {
         if (error) {
@@ -46,7 +46,7 @@ const getRecipeById = (id) => {
 const getLatestRecipe = () => {
   return new Promise((resolve, reject) => {
     db.query(
-      "SELECT * FROM recipes ORDER BY created_at DESC",
+      "SELECT * FROM recipes ORDER BY created_at DESC LIMIT 6",
       (error, result) => {
         if (error) {
           reject(error);
@@ -87,6 +87,17 @@ const getRecipeByUser = (user_id) => {
     );
   });
 };
+
+const getRecipeDetail = (id) =>
+  new Promise((resolve, reject) => {
+    db.query("SELECT * FROM recipes WHERE id = $1", [id], (error, result) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(result);
+      }
+    });
+  });
 
 const addRecipe = (props) => {
   return new Promise((resolve, reject) => {
@@ -144,6 +155,7 @@ module.exports = {
   getLatestRecipe,
   getRecipeWithComment,
   getRecipeByUser,
+  getRecipeDetail,
   addRecipe,
   editRecipe,
   getRecipeById,
