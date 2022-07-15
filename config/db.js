@@ -2,6 +2,7 @@
 const { Pool, Client } = require("pg");
 require("dotenv").config();
 
+console.log("process.env.ENV_MODE", process.env.ENV_MODE);
 let connection;
 if (process.env.ENV_MODE === "prod") {
   connection = new Client({

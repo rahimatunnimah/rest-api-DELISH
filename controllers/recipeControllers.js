@@ -87,17 +87,18 @@ const getRecipeByUser = async (req, res) => {
 const addRecipe = async (req, res) => {
   try {
     const { name, ingredients, video, user_id } = req.body;
+    console.log(req.body);
+    const recipe_image = req.file.path;
     const addRecipe = await model.addRecipe({
       name,
       ingredients,
       video,
       user_id,
-      recipe_image: req.file.path,
+      recipe_image,
     });
 
     if (addRecipe) {
       const bahan = addRecipe.rows[0].ingredients.split(",");
-
       res.send({
         message: "data added successfully",
         data: {
@@ -105,13 +106,14 @@ const addRecipe = async (req, res) => {
           ingredients: bahan,
           video,
           user_id,
-          recipe_image: req.file.path,
+          recipe_image,
         },
       });
     } else {
       res.status(400).send("data failed to add");
     }
   } catch (error) {
+    console.log(error);
     res.status(400).send("something went wrong");
   }
 };

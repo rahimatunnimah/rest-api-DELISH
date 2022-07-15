@@ -9,7 +9,7 @@ Router.get("/", controller.getRecipe)
   .get("/latest/recipe", controller.getLatestRecipe)
   .get("/comment", controller.getRecipeWithComment)
   .get("/user/:id", controller.getRecipeByUser)
-  .post("/add", middlewares.checkToken, uploadImage, controller.addRecipe)
+  .post("/add", uploadImage, controller.addRecipe)
   .patch("/edit", middlewares.checkToken, controller.editRecipe)
   .delete("/delete", middlewares.checkToken, controller.deleteRecipe);
 
