@@ -57,6 +57,22 @@ const getLatestRecipe = () => {
     );
   });
 };
+
+const getPopularRecipe = () => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      "SELECT A.recipe_id, B.name, B.ingredients, B.recipe_image, C.category_name, COUNT(*) AS total FROM liked_recipe A INNER JOIN recipes B ON A.recipe_id = B.id  INNER JOIN category_recipe C ON B.category_id = C.id GROUP BY A.recipe_id, B.name, B.ingredients, B.recipe_image, C.category_name ORDER BY total DESC LIMIT 6;",
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+};
+
 const getRecipeWithComment = () => {
   return new Promise((resolve, reject) => {
     db.query(
@@ -99,16 +115,18 @@ const getRecipeDetail = (id) =>
     });
   });
 
+
 const addRecipe = (props) => {
   return new Promise((resolve, reject) => {
     db.query(
-      `INSERT INTO recipes (name, ingredients, recipe_image, video, user_id) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+      `INSERT INTO recipes (name, ingredients, recipe_image, video, user_id, category_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
       [
         props.name,
         props.ingredients,
         props.recipe_image,
         props.video,
         props.user_id,
+        props.category_id,
       ],
       (error, result) => {
         if (error) {
@@ -153,6 +171,7 @@ module.exports = {
   getAllRecipe,
   getNameRecipe,
   getLatestRecipe,
+  getPopularRecipe,
   getRecipeWithComment,
   getRecipeByUser,
   getRecipeDetail,

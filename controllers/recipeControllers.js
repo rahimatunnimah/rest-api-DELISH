@@ -50,7 +50,22 @@ const getLatestRecipe = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(400).send("something went wrong bhjkjh");
+    res.status(400).send("something went wrong");
+  }
+};
+
+const getPopularRecipe = async (req, res) => {
+  try {
+    const data = await model.getPopularRecipe();
+    const max = 6;
+    if (data) {
+      res.send({ result: data.rows, jumlahData: data.rowCount });
+    } else {
+      res.send({ data: (data.rows = max) });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("something went wrong");
   }
 };
 
@@ -86,12 +101,13 @@ const getRecipeByUser = async (req, res) => {
 
 const addRecipe = async (req, res) => {
   try {
-    const { name, ingredients, video, user_id } = req.body;
+    const { name, ingredients, video, user_id, category_id } = req.body;
     const addRecipe = await model.addRecipe({
       name,
       ingredients,
       video,
       user_id,
+      category_id,
       recipe_image: req.file.path,
     });
 
@@ -105,6 +121,7 @@ const addRecipe = async (req, res) => {
           ingredients: bahan,
           video,
           user_id,
+          category_id,
           recipe_image: req.file.path,
         },
       });
@@ -180,6 +197,7 @@ module.exports = {
   getRecipeDetail,
   searchNameRecipe,
   getLatestRecipe,
+  getPopularRecipe,
   getRecipeWithComment,
   getRecipeByUser,
   addRecipe,
