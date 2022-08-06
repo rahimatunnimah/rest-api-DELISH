@@ -3,7 +3,12 @@ const db = require("../config/db");
 const getAllRecipe = (page, limit) => {
   return new Promise((resolve, reject) => {
     db.query(
-      `SELECT * FROM recipes ORDER BY recipes.id DESC LIMIT $2 OFFSET (($1 - 1) * $2)`,
+      `SELECT R.id, R.name, R.ingredients, R.recipe_image, R.user_id, R.category_id, C.category_name, U.username
+        FROM recipes R INNER JOIN category_recipe C ON R.category_id = C.id 
+        INNER JOIN users U ON R.user_id = U.id 
+        GROUP BY R.id, R.name, R.ingredients, R.recipe_image, R.user_id, R.category_id, C.category_name, U.username 
+        ORDER BY R.id DESC 
+        LIMIT $2 OFFSET (($1 - 1) * $2)`,
       [page, limit],
       (error, result) => {
         if (error) {
@@ -46,7 +51,7 @@ const getRecipeById = (id) => {
 const getLatestRecipe = () => {
   return new Promise((resolve, reject) => {
     db.query(
-      "SELECT * FROM recipes ORDER BY created_at DESC LIMIT 6",
+      `SELECT * FROM recipes ORDER BY created_at DESC LIMIT 6`,
       (error, result) => {
         if (error) {
           reject(error);
@@ -61,7 +66,28 @@ const getLatestRecipe = () => {
 const getPopularRecipe = () => {
   return new Promise((resolve, reject) => {
     db.query(
-      "SELECT A.recipe_id, B.name, B.ingredients, B.recipe_image, C.category_name, COUNT(*) AS total FROM liked_recipe A INNER JOIN recipes B ON A.recipe_id = B.id  INNER JOIN category_recipe C ON B.category_id = C.id GROUP BY A.recipe_id, B.name, B.ingredients, B.recipe_image, C.category_name ORDER BY total DESC LIMIT 6;",
+      `SELECT L.recipe_id, R.name, R.ingredients, R.recipe_image, C.category_name, COUNT(*) AS total
+        FROM liked_recipe L INNER JOIN recipes R ON L.recipe_id = R.id  INNER JOIN category_recipe C 
+        ON R.category_id = C.id GROUP BY L.recipe_id, R.name, R.ingredients, R.recipe_image, C.category_name 
+        ORDER BY total DESC LIMIT 5`,
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+};
+
+const getListPopularRecipe = () => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      `SELECT L.recipe_id, R.name, R.ingredients, R.recipe_image, C.category_name, COUNT(*) AS total
+        FROM liked_recipe L INNER JOIN recipes R ON L.recipe_id = R.id  INNER JOIN category_recipe C 
+        ON R.category_id = C.id GROUP BY L.recipe_id, R.name, R.ingredients, R.recipe_image, C.category_name 
+        ORDER BY total DESC LIMIT 5`,
       (error, result) => {
         if (error) {
           reject(error);
@@ -76,7 +102,8 @@ const getPopularRecipe = () => {
 const getRecipeWithComment = () => {
   return new Promise((resolve, reject) => {
     db.query(
-      `SELECT recipes.id, recipes.name, recipes.ingredients, comment.id ,comment.recipe_id, comment.comment FROM recipes INNER JOIN comment ON recipes.id = comment.recipe_id ORDER BY recipes.id`,
+      `SELECT recipes.id, recipes.name, recipes.ingredients, comment.id ,comment.recipe_id, comment.comment
+      FROM recipes INNER JOIN comment ON recipes.id = comment.recipe_id ORDER BY recipes.id`,
       (error, result) => {
         if (error) {
           reject(error);
@@ -119,12 +146,11 @@ const getRecipeDetail = (id) =>
 const addRecipe = (props) => {
   return new Promise((resolve, reject) => {
     db.query(
-      `INSERT INTO recipes (name, ingredients, recipe_image, video, user_id, category_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+      `INSERT INTO recipes (name, ingredients, recipe_image, user_id, category_id) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
       [
         props.name,
         props.ingredients,
         props.recipe_image,
-        props.video,
         props.user_id,
         props.category_id,
       ],
@@ -172,6 +198,7 @@ module.exports = {
   getNameRecipe,
   getLatestRecipe,
   getPopularRecipe,
+  getListPopularRecipe,
   getRecipeWithComment,
   getRecipeByUser,
   getRecipeDetail,

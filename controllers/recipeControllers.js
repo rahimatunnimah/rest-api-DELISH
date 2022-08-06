@@ -57,11 +57,25 @@ const getLatestRecipe = async (req, res) => {
 const getPopularRecipe = async (req, res) => {
   try {
     const data = await model.getPopularRecipe();
-    const max = 6;
+    const max = 5;
     if (data) {
       res.send({ result: data.rows, jumlahData: data.rowCount });
     } else {
       res.send({ data: (data.rows = max) });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("something went wrong");
+  }
+};
+
+const getListPopularRecipe = async (req, res) => {
+  try {
+    const data = await model.getListPopularRecipe();
+    if (data.rowCount > 0) {
+      res.send({ result: data.rows, jumlahData: data.rowCount });
+    } else {
+      res.status(404).send("Data not found");
     }
   } catch (error) {
     console.log(error);
@@ -101,11 +115,10 @@ const getRecipeByUser = async (req, res) => {
 
 const addRecipe = async (req, res) => {
   try {
-    const { name, ingredients, video, user_id, category_id } = req.body;
+    const { name, ingredients, user_id, category_id } = req.body;
     const addRecipe = await model.addRecipe({
       name,
       ingredients,
-      video,
       user_id,
       category_id,
       recipe_image: req.file.path,
@@ -119,7 +132,6 @@ const addRecipe = async (req, res) => {
         data: {
           name: name.trim(),
           ingredients: bahan,
-          video,
           user_id,
           category_id,
           recipe_image: req.file.path,
@@ -129,6 +141,7 @@ const addRecipe = async (req, res) => {
       res.status(400).send("data failed to add");
     }
   } catch (error) {
+    console.log(error)
     res.status(400).send("something went wrong");
   }
 };
@@ -198,6 +211,7 @@ module.exports = {
   searchNameRecipe,
   getLatestRecipe,
   getPopularRecipe,
+  getListPopularRecipe,
   getRecipeWithComment,
   getRecipeByUser,
   addRecipe,
