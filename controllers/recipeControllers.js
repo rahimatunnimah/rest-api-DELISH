@@ -22,19 +22,30 @@ const getRecipeDetail = async (req, res) => {
       });
     }
   } catch (error) {
+    console.log(error)
     res.status(400).send("Something went wrong detail");
   }
 };
 
 const searchNameRecipe = async (req, res) => {
   try {
-    const { name } = req.body;
-    const getData = await model.getNameRecipe(name);
-    res.send({
-      data: getData.rows,
-      jumlahData: getData.rowCount,
-    });
+    const { name } = req.query;
+    const { page, limit } = req.query;
+    if(name === ""){
+      const getAll = await model.getAllRecipe(page, limit);
+        res.send({
+          data: getAll.rows,
+          jumlahData: getAll.rowCount,
+      });
+    } else {
+      const getData = await model.getNameRecipe(name);
+      res.send({
+        data: getData.rows,
+        jumlahData: getData.rowCount,
+      });
+    }
   } catch (error) {
+    console.log(error.message)
     res.status(400).send("something went wrong");
   }
 };

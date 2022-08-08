@@ -38,6 +38,41 @@ const getByEmail = (email) => {
     );
   });
 };
+
+const getLikedRecipe = (user_id) => 
+  new Promise((resolve, reject) => {
+    db.query(`SELECT L.*, R.name, R.recipe_image, C.category_name
+              FROM liked_recipe L 
+              LEFT JOIN recipes R ON L.recipe_id = R.id
+              LEFT JOIN category_recipe C ON R.category_id = C.id
+              WHERE L.user_id = $1`,
+            [user_id], (error, result) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+
+
+const getSavedRecipe = (user_id) => 
+  new Promise((resolve, reject) => {
+    db.query(`SELECT S.*, R.name, R.recipe_image, C.category_name
+              FROM saved_recipe S 
+              LEFT JOIN recipes R ON S.recipe_id = R.id
+              LEFT JOIN category_recipe C ON R.category_id = C.id
+              WHERE S.user_id = $1`,
+            [user_id], (error, result) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+
+
 const addUser = (props) => {
   return new Promise((resolve, reject) => {
     db.query(
@@ -93,6 +128,8 @@ module.exports = {
   getAllUser,
   getUserById,
   getByEmail,
+  getLikedRecipe,
+  getSavedRecipe,
   addUser,
   editUser,
   deleteUser,

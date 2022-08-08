@@ -10,6 +10,44 @@ const getUsers = async (req, res) => {
   }
 };
 
+const getLikedRecipe = async (req, res) => {
+  try {
+    const user_id = parseInt(req.params.id);
+    const getData = await model.getLikedRecipe(user_id);
+
+    if (getData?.rows?.length === 0) {
+      res.status(400).send("Data not found");
+    } else {
+      res.send({
+        data: getData?.rows,
+        jumlahData: getData?.rowCount
+      });
+    }
+  } catch (error) {
+    console.log(error)
+    res.status(400).send("Something went wrong liked");
+  }
+};
+
+const getSavedRecipe = async (req, res) => {
+  try {
+    const user_id = parseInt(req.params.id);
+    const getData = await model.getSavedRecipe(user_id);
+
+    if (getData?.rows?.length === 0) {
+      res.status(400).send("Data not found");
+    } else {
+      res.send({
+        data: getData?.rows,
+        jumlahData: getData?.rowCount
+      });
+    }
+  } catch (error) {
+    console.log(error)
+    res.status(400).send("Something went wrong liked");
+  }
+};
+
 const searchEmailUsers = async (req, res) => {
   try {
     const { email } = req.body;
@@ -86,7 +124,8 @@ const deleteUser = async (req, res) => {
 
 module.exports = {
   getUsers,
-
+  getLikedRecipe,
+  getSavedRecipe,
   editUser,
   deleteUser,
   searchEmailUsers,

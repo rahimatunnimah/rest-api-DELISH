@@ -24,7 +24,7 @@ const getAllRecipe = (page, limit) => {
 const getNameRecipe = (name) => {
   return new Promise((resolve, reject) => {
     db.query(
-      `SELECT * FROM recipes WHERE name ~* $1`,
+      `SELECT R.*, C.category_name FROM recipes R INNER JOIN category_recipe C ON R.category_id = C.id WHERE name ~* $1`,
       [name],
       (error, result) => {
         if (error) {
@@ -37,17 +37,6 @@ const getNameRecipe = (name) => {
   });
 };
 
-const getRecipeById = (id) => {
-  return new Promise((resolve, reject) => {
-    db.query(`SELECT * FROM recipes WHERE id = $1`, [id], (error, result) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(result);
-      }
-    });
-  });
-};
 const getLatestRecipe = () => {
   return new Promise((resolve, reject) => {
     db.query(
@@ -118,7 +107,7 @@ const getRecipeWithComment = () => {
 const getRecipeByUser = (user_id) => {
   return new Promise((resolve, reject) => {
     db.query(
-      `SELECT * FROM recipes WHERE user_id = $1`,
+      `SELECT R.*, C.category_name FROM recipes R INNER JOIN category_recipe C ON R.category_id = C.id WHERE user_id = $1`,
       [user_id],
       (error, result) => {
         if (error) {
@@ -131,9 +120,14 @@ const getRecipeByUser = (user_id) => {
   });
 };
 
-const getRecipeDetail = (id) =>
+const getRecipeDetail = (id) => 
   new Promise((resolve, reject) => {
-    db.query("SELECT * FROM recipes WHERE id = $1", [id], (error, result) => {
+    db.query(`SELECT recipes.*, users.username
+              FROM recipes
+              INNER JOIN users
+              ON recipes.user_id = users.id
+              WHERE recipes.id = $1`,
+            [id], (error, result) => {
       if (error) {
         reject(error);
       } else {
@@ -204,6 +198,5 @@ module.exports = {
   getRecipeDetail,
   addRecipe,
   editRecipe,
-  getRecipeById,
   deleteRecipe,
 };

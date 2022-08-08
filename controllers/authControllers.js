@@ -19,7 +19,7 @@ const register = async (req, res) => {
       });
 
       if (addUser) {
-        res.send("data added successfully");
+        res.send("Register successfully");
       } else {
         res.status(400).send("data failed to add");
       }
