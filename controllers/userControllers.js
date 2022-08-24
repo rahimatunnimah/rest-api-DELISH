@@ -10,6 +10,24 @@ const getUsers = async (req, res) => {
   }
 };
 
+const getUserById = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const getData = await model.getUserById(id);
+
+    if (getData.rows.length === 0) {
+      res.send("user not found");
+    } else {
+      res.send({
+        data: getData.rows,
+      });
+    }
+  } catch (error) {
+    res.status(400).send("Get data profile failed");
+  }
+};
+
+
 const getLikedRecipe = async (req, res) => {
   try {
     const user_id = parseInt(req.params.id);
@@ -124,6 +142,7 @@ const deleteUser = async (req, res) => {
 
 module.exports = {
   getUsers,
+  getUserById,
   getLikedRecipe,
   getSavedRecipe,
   editUser,

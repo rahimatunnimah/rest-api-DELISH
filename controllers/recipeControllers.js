@@ -1,4 +1,6 @@
 const model = require("../models/recipeModels");
+const cloudinary = require("../middlewares/cloudinary");
+
 const getRecipe = async (req, res) => {
   try {
     const { page, limit } = req.query;
@@ -22,7 +24,7 @@ const getRecipeDetail = async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(400).send("Something went wrong detail");
   }
 };
@@ -31,11 +33,11 @@ const searchNameRecipe = async (req, res) => {
   try {
     const { name } = req.query;
     const { page, limit } = req.query;
-    if(name === ""){
+    if (name === "") {
       const getAll = await model.getAllRecipe(page, limit);
-        res.send({
-          data: getAll.rows,
-          jumlahData: getAll.rowCount,
+      res.send({
+        data: getAll.rows,
+        jumlahData: getAll.rowCount,
       });
     } else {
       const getData = await model.getNameRecipe(name);
@@ -45,7 +47,7 @@ const searchNameRecipe = async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error.message)
+    console.log(error.message);
     res.status(400).send("something went wrong");
   }
 };
@@ -127,12 +129,14 @@ const getRecipeByUser = async (req, res) => {
 const addRecipe = async (req, res) => {
   try {
     const { name, ingredients, user_id, category_id } = req.body;
+    const recipeCloud = await cloudinary.uploader.upload(req?.file?.path);
+    const recipe_image = recipeCloud?.url;
     const addRecipe = await model.addRecipe({
       name,
       ingredients,
       user_id,
       category_id,
-      recipe_image: req.file.path,
+      recipe_image,
     });
 
     if (addRecipe) {
@@ -145,14 +149,14 @@ const addRecipe = async (req, res) => {
           ingredients: bahan,
           user_id,
           category_id,
-          recipe_image: req.file.path,
+          recipe_image,
         },
       });
     } else {
       res.status(400).send("data failed to add");
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(400).send("something went wrong");
   }
 };
@@ -216,6 +220,52 @@ const deleteRecipe = async (req, res) => {
   }
 };
 
+const getVideoByRecipe = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const getVideo = await model.getVideoByRecipe(id);
+
+    if (getVideo.rows.length === 0) {
+      res.status(400).send("Data not found");
+    } else {
+      res.send({
+        data: getVideo.rows,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("something went wrong");
+  }
+};
+
+const addVideoRecipe = async (req, res) => {
+  try {
+    const { video, recipe_id, user_id, description } = req.body;
+    const addVideo = await model.addVideoRecipe({
+      video,
+      recipe_id,
+      user_id,
+      description,
+    });
+    if (addVideo) {
+      res.send({
+        message: "data added successfully",
+        data: {
+          video,
+          recipe_id,
+          user_id,
+          description,
+        },
+      });
+    } else {
+      res.status(400).send("data failed to add");
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("something went wrong");
+  }
+};
+
 module.exports = {
   getRecipe,
   getRecipeDetail,
@@ -228,4 +278,6 @@ module.exports = {
   addRecipe,
   editRecipe,
   deleteRecipe,
+  getVideoByRecipe,
+  addVideoRecipe,
 };

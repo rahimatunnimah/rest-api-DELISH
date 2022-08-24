@@ -26,7 +26,7 @@ const getCommentById = (id) => {
 const getCommentByRecipe = (id) =>
   new Promise((resolve, reject) => {
     db.query(
-      "SELECT comments.*, recipes.name, users.username, users.image FROM comment INNER JOIN users ON users.id = comment.user_id INNER JOIN recipes ON recipes.id = comment.recipe_id WHERE recipes.id = $1",
+      "SELECT comments.*, recipes.name, users.username, users.image FROM comments INNER JOIN users ON users.id = comments.user_id INNER JOIN recipes ON recipes.id = comments.recipe_id WHERE recipes.id = $1",
       [id],
       (error, result) => {
         if (error) {

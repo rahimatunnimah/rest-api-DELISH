@@ -3,7 +3,7 @@ const middlewares = require("../middlewares/verifyToken");
 const controller = require("../controllers/commentControllers");
 
 Router.get("/", controller.showAllComment)
-  .get("/recipe", controller.getCommentByRecipe)
+  .get("/recipe/:id", controller.getCommentByRecipe)
   .post("/add", middlewares.checkToken, controller.addComment)
   .patch("/edit", middlewares.checkToken, controller.editComment)
   .delete("/delete", middlewares.checkToken, controller.deleteComment);

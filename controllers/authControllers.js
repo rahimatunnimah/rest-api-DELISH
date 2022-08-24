@@ -8,8 +8,9 @@ const register = async (req, res) => {
     const salt = bcrypt.genSaltSync(15);
     const hash = bcrypt.hashSync(password, salt);
     const checkEmail = await model.getByEmail(email);
+
     if (checkEmail.rowCount > 0) {
-      res.send("duplicate email");
+      res.status(401).send("duplicate email");
     } else {
       const addUser = await model.addUser({
         username: username.trim(),
@@ -17,12 +18,9 @@ const register = async (req, res) => {
         password: hash,
         phone: phone.trim(),
       });
-
-      if (addUser) {
-        res.send("Register successfully");
-      } else {
-        res.status(400).send("data failed to add");
-      }
+      res.send({
+        message: "Register user successfully",
+      });
     }
   } catch (error) {
     console.log(error);

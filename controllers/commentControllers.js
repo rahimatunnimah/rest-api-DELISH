@@ -15,7 +15,7 @@ const showAllComment = async (req, res) => {
 };
 const getCommentByRecipe = async (req, res) => {
   try {
-    const id = parseInt(req.body.id);
+    const id = parseInt(req.params.id);
     const getData = await model.getCommentByRecipe(id);
 
     res.send({
@@ -36,7 +36,7 @@ const addComment = async (req, res) => {
       user_id,
     });
     if (insertComment) {
-      res.send("data added successfully");
+      res.send(insertComment.rows);
     } else {
       res.status(400).send("data failed to add");
     }
