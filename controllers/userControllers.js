@@ -221,7 +221,7 @@ const addSaveRecipe = async (req, res) => {
       res.status(400).send("save failed to add");
     }
   } catch (error) {
-    res.status(400).send("ada yang error");
+    res.status(400).send("something went wrong");
   }
 };
 
