@@ -27,45 +27,6 @@ const getUserById = async (req, res) => {
   }
 };
 
-
-const getLikedRecipe = async (req, res) => {
-  try {
-    const user_id = parseInt(req.params.id);
-    const getData = await model.getLikedRecipe(user_id);
-
-    if (getData?.rows?.length === 0) {
-      res.status(400).send("Data not found");
-    } else {
-      res.send({
-        data: getData?.rows,
-        jumlahData: getData?.rowCount
-      });
-    }
-  } catch (error) {
-    console.log(error)
-    res.status(400).send("Something went wrong liked");
-  }
-};
-
-const getSavedRecipe = async (req, res) => {
-  try {
-    const user_id = parseInt(req.params.id);
-    const getData = await model.getSavedRecipe(user_id);
-
-    if (getData?.rows?.length === 0) {
-      res.status(400).send("Data not found");
-    } else {
-      res.send({
-        data: getData?.rows,
-        jumlahData: getData?.rowCount
-      });
-    }
-  } catch (error) {
-    console.log(error)
-    res.status(400).send("Something went wrong liked");
-  }
-};
-
 const searchEmailUsers = async (req, res) => {
   try {
     const { email } = req.body;
@@ -140,12 +101,162 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const getAllLike = async (req, res) => {
+  try {
+    const getData = await model.getAllLike();
+    res.send({ data: getData.rows, jumlahData: getData.rowCount });
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("something went wrong");
+  }
+};
+
+const getLikedRecipe = async (req, res) => {
+  try {
+    const user_id = parseInt(req.params.id);
+    const getData = await model.getLikedRecipe(user_id);
+
+    if (getData?.rows?.length === 0) {
+      res.status(400).send("Data not found");
+    } else {
+      res.send({
+        data: getData?.rows,
+        jumlahData: getData?.rowCount,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("Something went wrong liked");
+  }
+};
+
+const addLikeRecipe = async (req, res) => {
+  try {
+    const { recipe_id, user_id } = req.body;
+    const addLike = await model.addLikeRecipe({
+      recipe_id,
+      user_id,
+    });
+    if (addLike) {
+      res.send({
+        message: "like added successfully",
+        data: {
+          recipe_id,
+          user_id,
+        },
+      });
+    } else {
+      res.status(400).send("like failed to add");
+    }
+  } catch (error) {
+    res.status(400).send("ada yang error");
+  }
+};
+
+const deleteLikeRecipe = async (req, res) => {
+  try {
+    const { id } = req.body;
+    const getData = await model.getLikeById(id);
+    if (getData.rowCount > 0) {
+      const deleteUser = await model.deleteLikeRecipe(id);
+      if (deleteUser) {
+        res.send(`data id ${id} successfully deleted`);
+      } else {
+        res.status(400).send("data failed to delete");
+      }
+    } else {
+      res.status(400).send("data not found");
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("something went wrong");
+  }
+};
+
+const getAllSave = async (req, res) => {
+  try {
+    const getData = await model.getAllSave();
+    res.send({ data: getData.rows, jumlahData: getData.rowCount });
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("something went wrong");
+  }
+};
+
+const getSavedRecipe = async (req, res) => {
+  try {
+    const user_id = parseInt(req.params.id);
+    const getData = await model.getSavedRecipe(user_id);
+
+    if (getData?.rows?.length === 0) {
+      res.status(400).send("Data not found");
+    } else {
+      res.send({
+        data: getData?.rows,
+        jumlahData: getData?.rowCount,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("Something went wrong liked");
+  }
+};
+
+const addSaveRecipe = async (req, res) => {
+  try {
+    const { recipe_id, user_id } = req.body;
+    const addSave = await model.addSaveRecipe({
+      recipe_id,
+      user_id,
+    });
+    if (addSave) {
+      res.send({
+        message: "save added successfully",
+        data: {
+          recipe_id,
+          user_id,
+        },
+      });
+    } else {
+      res.status(400).send("save failed to add");
+    }
+  } catch (error) {
+    res.status(400).send("ada yang error");
+  }
+};
+
+const deleteSaveRecipe = async (req, res) => {
+  try {
+    const { id } = req.body;
+    const getData = await model.getSaveById(id);
+    if (getData.rowCount > 0) {
+      const deleteUser = await model.deleteSaveRecipe(id);
+      if (deleteUser) {
+        res.send(`data id ${id} successfully deleted`);
+      } else {
+        res.status(400).send("data failed to delete");
+      }
+    } else {
+      res.status(400).send("data not found");
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("something went wrong");
+  }
+};
+
 module.exports = {
   getUsers,
   getUserById,
-  getLikedRecipe,
-  getSavedRecipe,
   editUser,
   deleteUser,
   searchEmailUsers,
+  getAllLike,
+  getLikedRecipe,
+  addLikeRecipe,
+  deleteLikeRecipe,
+  getAllSave,
+  getSavedRecipe,
+  addSaveRecipe,
+  deleteSaveRecipe,
 };
