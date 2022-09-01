@@ -4,9 +4,9 @@ const getAllRecipe = (page, limit) => {
   return new Promise((resolve, reject) => {
     db.query(
       `SELECT R.*, C.category_name, U.username
-        FROM recipes R INNER JOIN category_recipe C ON R.category_id = C.id 
-        INNER JOIN users U ON R.user_id = U.id 
-        ORDER BY R.id DESC 
+        FROM recipes R INNER JOIN category_recipe C ON R.category_id = C.id
+        INNER JOIN users U ON R.user_id = U.id
+        ORDER BY R.id DESC
         LIMIT $2 OFFSET (($1 - 1) * $2)`,
       [page, limit],
       (error, result) => {
@@ -35,8 +35,24 @@ const getRecipeById = (id) => {
 const getNameRecipe = (name) => {
   return new Promise((resolve, reject) => {
     db.query(
-      `SELECT R.*, C.category_name FROM recipes R INNER JOIN category_recipe C ON R.category_id = C.id WHERE name ~* $1`,
-      [name],
+      `SELECT R.*, C.category_name FROM recipes R INNER JOIN category_recipe C ON R.category_id = C.id WHERE LOWER(name) LIKE $1 ORDER BY name ASC`,
+      [`%${name}%`],
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+};
+
+const getRecipeByCategory = (category_name) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      `SELECT C.category_name, R.* FROM category_recipe C INNER JOIN recipes R ON C.id = R.category_id WHERE LOWER(category_name) LIKE $1`,
+      [`%${category_name}%`],
       (error, result) => {
         if (error) {
           reject(error);
@@ -236,6 +252,7 @@ module.exports = {
   getAllRecipe,
   getRecipeById,
   getNameRecipe,
+  getRecipeByCategory,
   getLatestRecipe,
   getPopularRecipe,
   getListPopularRecipe,

@@ -6,6 +6,7 @@ const uploadImage = require("../middlewares/uploadRecipeImage");
 Router.get("/", controller.getRecipe)
   .get("/detail/:id", controller.getRecipeDetail)
   .get("/search/name", controller.searchNameRecipe)
+  .get("/sort/category", controller.sortRecipeByCategory)
   .get("/latest/recipe", controller.getLatestRecipe)
   .get("/popular/recipe", controller.getPopularRecipe)
   .get("/popular/list", controller.getListPopularRecipe)

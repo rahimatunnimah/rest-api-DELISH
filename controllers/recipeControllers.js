@@ -7,6 +7,7 @@ const getRecipe = async (req, res) => {
     const getData = await model.getAllRecipe(page, limit);
     res.send({ data: getData.rows, jumlahData: getData.rowCount });
   } catch (error) {
+    console.log(error);
     res.status(400).send("something went wrong");
   }
 };
@@ -49,6 +50,16 @@ const searchNameRecipe = async (req, res) => {
   } catch (error) {
     console.log(error.message);
     res.status(400).send("something went wrong");
+  }
+};
+
+const sortRecipeByCategory = async (req, res) => {
+  try {
+    const { category_name } = req.query;
+    const getSortRecipe = await model.getRecipeByCategory(category_name);
+    res.send({ data: getSortRecipe.rows, jumlahData: getSortRecipe.rowCount });
+  } catch (error) {
+    console.log(error);
   }
 };
 
@@ -270,6 +281,7 @@ module.exports = {
   getRecipe,
   getRecipeDetail,
   searchNameRecipe,
+  sortRecipeByCategory,
   getLatestRecipe,
   getPopularRecipe,
   getListPopularRecipe,
