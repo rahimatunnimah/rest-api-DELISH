@@ -29,7 +29,7 @@ const getRecipeDetail = async (req, res) => {
     res.status(400).send("Something went wrong detail");
   }
 };
-// search recipe by name
+
 const searchNameRecipe = async (req, res) => {
   try {
     const { name } = req.query;
@@ -52,7 +52,7 @@ const searchNameRecipe = async (req, res) => {
     res.status(400).send("something went wrong");
   }
 };
-//sorting recipe by category name
+
 const sortRecipeByCategory = async (req, res) => {
   try {
     const { category_name } = req.query;
