@@ -31,6 +31,9 @@ const corsOptionsDelegate = function (req, callback) {
 };
 
 app.use("/api", cors(corsOptionsDelegate), router);
+app.use("*", (req, res) => {
+  res.send("Sukses");
+});
 
 app.listen(port, function (err) {
   if (err) throw err;
