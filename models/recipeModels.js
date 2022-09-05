@@ -67,7 +67,7 @@ const getRecipeByCategory = (category_name) => {
 const getLatestRecipe = () => {
   return new Promise((resolve, reject) => {
     db.query(
-      `SELECT * FROM recipes ORDER BY created_at DESC LIMIT 6`,
+      `SELECT * FROM recipes ORDER BY id DESC LIMIT 6`,
       (error, result) => {
         if (error) {
           reject(error);
