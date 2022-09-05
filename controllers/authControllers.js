@@ -5,6 +5,8 @@ const bcrypt = require("bcrypt");
 const register = async (req, res) => {
   try {
     const { username, email, password, phone } = req.body;
+    const image =
+      "https://res.cloudinary.com/df9tcvnrs/image/upload/v1662389640/avatar_qmtbzx.jpg";
     const salt = bcrypt.genSaltSync(15);
     const hash = bcrypt.hashSync(password, salt);
     const checkEmail = await model.getByEmail(email);
@@ -12,11 +14,12 @@ const register = async (req, res) => {
     if (checkEmail.rowCount > 0) {
       res.status(401).send("duplicate email");
     } else {
-      const addUser = await model.addUser({
+      await model.addUser({
         username: username.trim(),
         email: email.toLowerCase().trim(),
         password: hash,
         phone: phone.trim(),
+        image,
       });
       res.send({
         message: "Register user successfully",
