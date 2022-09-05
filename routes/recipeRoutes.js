@@ -13,9 +13,17 @@ Router.get("/", controller.getRecipe)
   .get("/comment", controller.getRecipeWithComment)
   .get("/user/:id", middlewares.checkToken, controller.getRecipeByUser)
   .get("/video/:id", controller.getVideoByRecipe)
+  .get("/category", controller.getCategory)
   .post("/add", middlewares.checkToken, uploadImage, controller.addRecipe)
   .post("/add/video", middlewares.checkToken, controller.addVideoRecipe)
+  .post("/add/category", middlewares.checkToken, controller.addCategory)
   .patch("/edit", middlewares.checkToken, controller.editRecipe)
-  .delete("/delete", middlewares.checkToken, controller.deleteRecipe);
+  .patch("/edit/category", middlewares.checkToken, controller.editCategory)
+  .delete("/delete", middlewares.checkToken, controller.deleteRecipe)
+  .delete(
+    "/delete/category",
+    middlewares.checkToken,
+    controller.deleteCategory
+  );
 
 module.exports = Router;

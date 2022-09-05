@@ -248,6 +248,82 @@ const addVideoRecipe = (props) => {
   });
 };
 
+const addCategory = (props) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      `INSERT INTO category_recipe (category_name) VALUES ($1) RETURNING *`,
+      [props.category_name],
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+};
+
+const getAllCategory = () => {
+  return new Promise((resolve, reject) => {
+    db.query(`SELECT * FROM category_recipe`, (error, result) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+};
+
+const getCategoryById = (id) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      `SELECT * FROM category_recipe WHERE id = $1`,
+      [id],
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+};
+
+const editCategory = (props) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      `UPDATE category_recipe SET category_name = $1 WHERE id = $2`,
+      [props.category_name, props.id],
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+};
+
+const deleteCategory = (id) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      `DELETE FROM category_recipe WHERE id = $1`,
+      [id],
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+};
+
 module.exports = {
   getAllRecipe,
   getRecipeById,
@@ -264,4 +340,9 @@ module.exports = {
   deleteRecipe,
   getVideoByRecipe,
   addVideoRecipe,
+  addCategory,
+  getAllCategory,
+  getCategoryById,
+  editCategory,
+  deleteCategory,
 };
