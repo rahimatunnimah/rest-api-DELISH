@@ -274,9 +274,9 @@ You can view my Postman collection [here]()
 
 ## Related Project
 
-:rocket: [`Backend Recipenation`](https://github.com/rahimatunnimah/rest-api-DELISH)
+:rocket: [`Backend DELEN`](https://github.com/rahimatunnimah/rest-api-DELISH)
 
-:rocket: [`Frontend Recipenation`](https://github.com/rahimatunnimah/next-js-delish)
+:rocket: [`Frontend DELEN`](https://github.com/rahimatunnimah/next-js-delish)
 
 :rocket: [`API`](https://delish-kitchen.herokuapp.com)
 
