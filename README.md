@@ -10,7 +10,7 @@
 
 <a  href="">
 
-<img  src="https://res.cloudinary.com/df9tcvnrs/image/upload/v1662003706/logo-recipe_cwkce2.png"  alt="Logo"  width="150px">
+<img  src="https://res.cloudinary.com/df9tcvnrs/image/upload/v1662431568/samples/logo_feujex.png"  alt="Logo"  width="150px">
 
 </a>
 
