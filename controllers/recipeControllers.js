@@ -277,6 +277,86 @@ const addVideoRecipe = async (req, res) => {
   }
 };
 
+const addCategory = async (req, res) => {
+  try {
+    const { category_name } = req.body;
+    const addCategoryRecipe = await model.addCategory({
+      category_name,
+    });
+
+    if (addCategoryRecipe) {
+      res.send({
+        message: "category added successfully",
+        data: {
+          category_name: category_name.trim(),
+        },
+      });
+    } else {
+      res.status(400).send("category failed to add");
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("something went wrong");
+  }
+};
+
+const getCategory = async (req, res) => {
+  try {
+    const getData = await model.getAllCategory();
+    res.send({ data: getData.rows, jumlahData: getData.rowCount });
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("something went wrong");
+  }
+};
+
+const editCategory = async (req, res) => {
+  try {
+    const { category_name, id } = req.body;
+
+    const getData = await model.getCategoryById(id);
+    if (getData.rowCount > 0) {
+      let inputCategoryName = category_name || getData.rows[0].category_name;
+      let message = "";
+
+      if (category_name) message += "name,";
+
+      const editData = await model.editCategory({
+        category_name: inputCategoryName,
+        id,
+      });
+      if (editData) {
+        res.send(`${message} successfully changed`);
+      } else {
+        res.status(400).send("data failed to change");
+      }
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("something went wrong");
+  }
+};
+
+const deleteCategory = async (req, res) => {
+  try {
+    const { id } = req.body;
+    const getData = await model.getCategoryById(id);
+    if (getData.rowCount > 0) {
+      const deleteCategoryRecipe = await model.deleteCategory(id);
+      if (deleteCategoryRecipe) {
+        res.send(`category id ${id} successfully deleted`);
+      } else {
+        res.status(400).send("category failed to delete");
+      }
+    } else {
+      res.status(400).send("category not found");
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("something went wrong");
+  }
+};
+
 module.exports = {
   getRecipe,
   getRecipeDetail,
@@ -292,4 +372,8 @@ module.exports = {
   deleteRecipe,
   getVideoByRecipe,
   addVideoRecipe,
+  addCategory,
+  getCategory,
+  editCategory,
+  deleteCategory,
 };

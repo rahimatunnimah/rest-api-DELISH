@@ -18,5 +18,11 @@
   },
   "devDependencies": {
     "eslint": "^8.18.0"
+  },
+  "name": "delish-kitchen-rest-api",
+  "description": "Tugas Backend",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
   }
 }
