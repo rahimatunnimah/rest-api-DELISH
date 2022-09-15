@@ -6,7 +6,7 @@ const register = async (req, res) => {
   try {
     const { username, email, password, phone } = req.body;
     const image =
-      "https://res.cloudinary.com/df9tcvnrs/image/upload/v1662389640/avatar_qmtbzx.jpg";
+      "https://res.cloudinary.com/df9tcvnrs/image/upload/v1663258145/samples/chef_dbig04.png";
     const salt = bcrypt.genSaltSync(15);
     const hash = bcrypt.hashSync(password, salt);
     const checkEmail = await model.getByEmail(email);
