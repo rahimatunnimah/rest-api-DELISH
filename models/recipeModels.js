@@ -324,6 +324,42 @@ const deleteCategory = (id) => {
   });
 };
 
+const getSortRecipeNameDesc = () => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      `SELECT R.*, C.category_name, U.username
+        FROM recipes R INNER JOIN category_recipe C ON R.category_id = C.id
+        INNER JOIN users U ON R.user_id = U.id
+        ORDER BY R.name DESC`,
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+};
+
+const getSortRecipeNameAsc = () => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      `SELECT R.*, C.category_name, U.username
+        FROM recipes R INNER JOIN category_recipe C ON R.category_id = C.id
+        INNER JOIN users U ON R.user_id = U.id
+        ORDER BY R.name ASC`,
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+};
+
 module.exports = {
   getAllRecipe,
   getRecipeById,
@@ -345,4 +381,6 @@ module.exports = {
   getCategoryById,
   editCategory,
   deleteCategory,
+  getSortRecipeNameDesc,
+  getSortRecipeNameAsc,
 };

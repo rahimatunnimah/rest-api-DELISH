@@ -357,6 +357,34 @@ const deleteCategory = async (req, res) => {
   }
 };
 
+const getListRecipeNameDesc = async (req, res) => {
+  try {
+    const data = await model.getSortRecipeNameDesc();
+    if (data.rowCount > 0) {
+      res.send({ result: data.rows, jumlahData: data.rowCount });
+    } else {
+      res.status(404).send("Data not found");
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("something went wrong");
+  }
+};
+
+const getListRecipeNameAsc = async (req, res) => {
+  try {
+    const data = await model.getSortRecipeNameAsc();
+    if (data.rowCount > 0) {
+      res.send({ result: data.rows, jumlahData: data.rowCount });
+    } else {
+      res.status(404).send("Data not found");
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("something went wrong");
+  }
+};
+
 module.exports = {
   getRecipe,
   getRecipeDetail,
@@ -376,4 +404,6 @@ module.exports = {
   getCategory,
   editCategory,
   deleteCategory,
+  getListRecipeNameDesc,
+  getListRecipeNameAsc,
 };
