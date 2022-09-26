@@ -59,15 +59,24 @@ const addUser = (props) => {
 const editUser = (props) => {
   return new Promise((resolve, reject) => {
     db.query(
-      `UPDATE users SET username = $1, email = $2, password = $3, phone = $4, image = $5 WHERE id = $6`,
-      [
-        props.username,
-        props.email,
-        props.password,
-        props.phone,
-        props.image,
-        props.id,
-      ],
+      `UPDATE users SET username = $1, email = $2, password = $3, phone = $4 WHERE id = $5`,
+      [props.username, props.email, props.password, props.phone, props.id],
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+};
+
+const editProfileUser = (props) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      `UPDATE users SET image = $1 WHERE id = $2`,
+      [props.image, props.id],
       (error, result) => {
         if (error) {
           reject(error);
@@ -255,6 +264,7 @@ module.exports = {
   getByEmail,
   addUser,
   editUser,
+  editProfileUser,
   deleteUser,
   getAllLike,
   getLikeById,

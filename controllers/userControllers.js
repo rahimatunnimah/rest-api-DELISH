@@ -1,4 +1,5 @@
 const model = require("../models/userModels");
+const cloudinary = require("../middlewares/cloudinary");
 
 const getUsers = async (req, res) => {
   try {
@@ -45,28 +46,24 @@ const searchEmailUsers = async (req, res) => {
 const editUser = async (req, res) => {
   try {
     const { username, email, password, phone, id } = req.body;
-    const image = req.file.path;
     const getData = await model.getUserById(id);
     if (getData.rowCount > 0) {
       let inputUsername = username || getData.rows[0].username;
       let inputEmail = email || getData.rows[0].email;
       let inputPassword = password || getData.rows[0].password;
       let inputPhone = phone || getData.rows[0].phone;
-      let inputImage = image || getData.rows[0].image;
       let message = "";
 
       if (username) message += "username,";
       if (email) message += "email,";
       if (password) message += "password,";
       if (phone) message += "phone,";
-      if (image) message += "image,";
 
       const editData = await model.editUser({
         username: inputUsername,
         email: inputEmail,
         password: inputPassword,
         phone: inputPhone,
-        image: inputImage,
         id,
       });
       if (editData) {
@@ -79,6 +76,31 @@ const editUser = async (req, res) => {
     console.log(error);
     res.status(400).send("something went wrong");
   }
+};
+
+const editProfileUser = async (req, res) => {
+  try {
+    const { id } = req.body;
+    const profileCloud = await cloudinary.uploader.upload(req?.file?.path);
+    const image = profileCloud?.url;
+    const getData = await model.getUserById(id);
+    if (getData.rowCount > 0) {
+      let inputImage = image || getData.rows[0].image;
+      let message = "";
+
+      if (image) message += "image,";
+
+      const editData = await model.editProfileUser({
+        image: inputImage,
+        id,
+      });
+      if (editData) {
+        res.send(`${message} successfully changed`);
+      } else {
+        res.status(400).send("data failed to change");
+      }
+    }
+  } catch (error) {}
 };
 
 const deleteUser = async (req, res) => {
@@ -249,6 +271,7 @@ module.exports = {
   getUsers,
   getUserById,
   editUser,
+  editProfileUser,
   deleteUser,
   searchEmailUsers,
   getAllLike,

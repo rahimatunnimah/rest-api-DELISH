@@ -6,7 +6,13 @@ const userUpload = require("../middlewares/uploadProfile");
 Router.get("/", controller.getUsers)
   .get("/:id", middlewares.checkToken, controller.getUserById)
   .get("/search/email", controller.searchEmailUsers)
-  .patch("/edit", middlewares.checkToken, userUpload, controller.editUser)
+  .patch("/edit", middlewares.checkToken, controller.editUser)
+  .patch(
+    "/edit/photo",
+    middlewares.checkToken,
+    userUpload,
+    controller.editProfileUser
+  )
   .delete("/delete", middlewares.checkToken, controller.deleteUser)
   .get("/like/recipe", controller.getAllLike)
   .get("/liked/recipe/:id", middlewares.checkToken, controller.getLikedRecipe)
